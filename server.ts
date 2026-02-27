@@ -15,8 +15,26 @@ app.use((req, res, next) => {
   next();
 });
 
+// Debug endpoint to check filesystem
+app.get("/api/debug/files", (req, res) => {
+  const rootFiles = fs.readdirSync(__dirname);
+  const publicFiles = fs.existsSync(path.join(__dirname, "public")) ? fs.readdirSync(path.join(__dirname, "public")) : ["public folder missing"];
+  const srcFiles = fs.existsSync(path.join(__dirname, "src")) ? fs.readdirSync(path.join(__dirname, "src")) : ["src folder missing"];
+  
+  res.json({
+    __dirname,
+    cwd: process.cwd(),
+    rootFiles,
+    publicFiles,
+    srcFiles,
+    testJsExists: fs.existsSync(path.join(__dirname, "public", "test.js")),
+    mainTsxExists: fs.existsSync(path.join(__dirname, "src", "main.tsx"))
+  });
+});
+
 // Serve public folder
 app.use(express.static(path.join(__dirname, "public")));
+
 
 // Serve src folder
 app.use("/src", express.static(path.join(__dirname, "src")));

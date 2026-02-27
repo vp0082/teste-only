@@ -9,10 +9,24 @@
         <p>Checking server status...</p>
         <div id="status-test-js">test.js: PENDING</div>
         <div id="status-main-tsx">main.tsx: PENDING</div>
+        <hr>
+        <h3>Server Debug Info:</h3>
+        <pre id="debug-info">Loading debug info...</pre>
     </div>
     
     <script>
         console.log('HTML Script: Starting diagnostics');
+        
+        // Fetch debug info
+        fetch('/api/debug/files')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('debug-info').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(err => {
+                document.getElementById('debug-info').textContent = 'Error fetching debug info: ' + err.message;
+            });
+
         window.addEventListener('error', function(e) {
             console.error('Global Error:', e.message);
             document.getElementById('root').innerHTML += '<div style="color:red">GLOBAL ERROR: ' + e.message + '</div>';
