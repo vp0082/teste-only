@@ -2,31 +2,33 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 const App = () => (
-  <div style={{ padding: '40px', background: 'navy', color: 'white', minHeight: '100vh' }}>
-    <h1>REACT IS RUNNING</h1>
-    <p>If you see this navy blue screen, React is working.</p>
+  <div style={{ 
+    height: '100vh', 
+    display: 'flex', 
+    flexDirection: 'column',
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    background: '#0f172a', 
+    color: 'white',
+    fontFamily: 'sans-serif'
+  }}>
+    <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>CONEXÃO ESTABELECIDA</h1>
+    <p style={{ fontSize: '1.2rem', opacity: 0.8 }}>O ambiente de desenvolvimento está pronto.</p>
+    <div style={{ 
+      marginTop: '2rem', 
+      padding: '1rem 2rem', 
+      border: '2px solid #38bdf8', 
+      borderRadius: '0.5rem',
+      color: '#38bdf8',
+      fontWeight: 'bold'
+    }}>
+      REACT ONLINE
+    </div>
   </div>
 );
 
-console.log('JS: Starting execution');
-
-try {
-  const container = document.getElementById('root');
-  if (container) {
-    console.log('JS: Container found, rendering...');
-    const root = createRoot(container);
-    root.render(<App />);
-  } else {
-    console.error('JS: Container #root not found');
-  }
-} catch (err) {
-  console.error('JS: Render error:', err);
-  document.body.innerHTML += '<div style="color:red">Render Error: ' + err.message + '</div>';
+const container = document.getElementById('root');
+if (container) {
+  const root = createRoot(container);
+  root.render(<App />);
 }
-export {};
-
-
-
-
-
-

@@ -1,44 +1,12 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Diagnostic Page</title>
-</head>
-<body style="margin: 0; min-height: 100vh; font-family: sans-serif;">
-    <div id="root" style="padding: 20px;">
-        <h1>DIAGNOSTIC PAGE</h1>
-        <p>Checking server status...</p>
-        <div id="status-test-js">test.js: PENDING</div>
-        <hr>
-        <button onclick="checkPing()">Manual Ping</button>
-        <div id="ping-result"></div>
-        <hr>
-        <h3>Server Debug Info:</h3>
-        <pre id="debug-info">Loading debug info...</pre>
-    </div>
-    
-    <script>
-        function checkPing() {
-            fetch('/ping')
-                .then(r => r.text())
-                .then(t => document.getElementById('ping-result').textContent = 'Ping: ' + t)
-                .catch(e => document.getElementById('ping-result').textContent = 'Ping Error: ' + e.message);
-        }
-
-        // Fetch debug info
-        fetch('/api/debug')
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('debug-info').textContent = JSON.stringify(data, null, 2);
-            })
-            .catch(err => {
-                document.getElementById('debug-info').textContent = 'Error fetching debug info: ' + err.message;
-            });
-    </script>
-
-    <script src="/test.js" 
-        onload="document.getElementById('status-test-js').innerHTML='test.js: LOADED'; document.body.style.background='lime';" 
-        onerror="document.getElementById('status-test-js').innerHTML='test.js: FAILED'; document.body.style.background='yellow';">
-    </script>
-
-</body>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
