@@ -9,13 +9,17 @@
     <div id="root">Carregando aplicativo...</div>
 
     <script>
-      console.log('HTML Script running');
-      document.body.style.border = '20px solid red';
-      document.getElementById('root').style.color = 'yellow';
-      document.getElementById('root').innerHTML = 'HTML SCRIPT EXECUTED - WAITING FOR JS MODULE...';
+      console.log('HTML: Initializing debug state');
+      window.addEventListener('error', function(e) {
+        console.error('Global Error:', e.message);
+        document.getElementById('root').innerHTML = 'RUNTIME ERROR: ' + e.message;
+        document.body.style.border = '20px solid purple';
+      });
     </script>
-
-    <script type="module" src="./src/main.tsx" onerror="document.getElementById('root').innerHTML = 'ERROR LOADING JS MODULE'; document.body.style.border = '20px solid orange';"></script>
+    <script type="module" src="/src/main.tsx" 
+      onload="console.log('HTML: JS Module loaded successfully')"
+      onerror="console.error('HTML: Failed to load JS Module'); document.getElementById('root').innerHTML = 'ERROR: CANNOT FIND /src/main.tsx'; document.body.style.border = '20px solid orange';">
+    </script>
 
 
   </body>
