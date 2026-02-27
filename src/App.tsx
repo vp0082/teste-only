@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { motion } from 'motion/react';
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { Check, Flame, Star, Shield, Lock, Instagram, Twitter, MessageCircle, Heart, Play } from 'lucide-react';
 
 const PLANS = [
@@ -45,11 +48,7 @@ export default function App() {
 
       <main className="relative z-10 max-w-md mx-auto px-6 py-12 flex flex-col items-center">
         {/* Profile Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center mb-8"
-        >
+        <div className="flex flex-col items-center mb-8">
           <div className="relative mb-4">
             <div className="w-32 h-32 rounded-full border-2 border-rose-500 p-1 overflow-hidden">
               <img 
@@ -66,27 +65,17 @@ export default function App() {
           
           <h1 className="text-2xl font-bold tracking-tight mb-1">Eduarda Oficial 💋</h1>
           <p className="text-rose-500 font-medium text-sm">@eduardaoficial1_</p>
-        </motion.div>
+        </div>
 
         {/* Bio Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-center mb-10"
-        >
+        <div className="text-center mb-10">
           <p className="text-gray-300 leading-relaxed text-sm">
             Oi, meu amor! 🔥💦 Sou a Duda, e hoje vou revelar um lado meu que vai te deixar sem fôlego… vídeos gozando com meus ficantes, trisal com amigas safadas e momentos íntimos onde me entrego de corpo e alma. 😏 Cada centímetro do meu corpo é pura tentação e minhas fotos peladas são um convite exclusivo para você explorar seus desejos mais secretos tudo sem censura! Se você tem coragem de se perder nessa paixão sem limites, vem comigo... Estou te esperando para uma experiência única e irresistível.😈💋
           </p>
-        </motion.div>
+        </div>
 
         {/* Stats Section */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.15 }}
-          className="grid grid-cols-3 gap-4 w-full mb-10 py-4 border-y border-white/5"
-        >
+        <div className="grid grid-cols-3 gap-4 w-full mb-10 py-4 border-y border-white/5">
           <div className="text-center">
             <span className="block text-lg font-bold">142</span>
             <span className="text-[10px] text-gray-500 uppercase tracking-wider">Fotos</span>
@@ -99,7 +88,7 @@ export default function App() {
             <span className="block text-lg font-bold">12.4k</span>
             <span className="text-[10px] text-gray-500 uppercase tracking-wider">Curtidas</span>
           </div>
-        </motion.div>
+        </div>
 
         {/* Media Feed Section */}
         <div className="w-full mb-12">
@@ -120,11 +109,8 @@ export default function App() {
               { type: 'image', seed: 'i3' },
               { type: 'video', seed: 'v3' },
             ].map((item, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + index * 0.05 }}
                 className="relative aspect-square rounded-lg overflow-hidden bg-white/5 group cursor-pointer"
               >
                 <img 
@@ -147,7 +133,7 @@ export default function App() {
                     0:42
                   </span>
                 )}
-              </motion.div>
+              </div>
             ))}
           </div>
           
@@ -161,14 +147,11 @@ export default function App() {
           <h2 className="text-xs uppercase tracking-[0.2em] text-gray-500 font-semibold mb-6 text-center">Assinaturas</h2>
           
           {PLANS.map((plan, index) => (
-            <motion.a
+            <a
               key={plan.id}
               href={plan.link}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + index * 0.1 }}
               className={`relative block w-full p-5 rounded-2xl border transition-all duration-300 group ${
                 plan.popular 
                   ? 'bg-rose-600 border-rose-500 shadow-lg shadow-rose-900/20 scale-[1.02]' 
@@ -205,7 +188,7 @@ export default function App() {
                   <span className="text-2xl font-black leading-none">{plan.price}</span>
                 </div>
               </div>
-            </motion.a>
+            </a>
           ))}
         </div>
 
@@ -217,15 +200,13 @@ export default function App() {
             { icon: MessageCircle, label: 'Telegram' },
             { icon: Heart, label: 'OnlyFans' }
           ].map((social, index) => (
-            <motion.button
+            <button
               key={index}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10"
+              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 hover:scale-110 transition-transform"
             >
               <social.icon className="w-5 h-5 text-rose-500" />
               <span className="text-[10px] text-gray-400 font-medium">{social.label}</span>
-            </motion.button>
+            </button>
           ))}
         </div>
 
@@ -246,14 +227,12 @@ export default function App() {
         </div>
 
         {/* Main CTA */}
-        <motion.a
+        <a
           href={PLANS[0].link}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-full py-4 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-full text-center shadow-xl shadow-rose-900/40 transition-colors mb-8 flex items-center justify-center gap-2"
+          className="w-full py-4 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-full text-center shadow-xl shadow-rose-900/40 transition-all hover:scale-[1.02] mb-8 flex items-center justify-center gap-2"
         >
           VEJA TUDO POR APENAS R$ 9,90
-        </motion.a>
+        </a>
 
         {/* Footer */}
         <footer className="w-full pt-8 border-t border-white/5 text-center space-y-4">
@@ -269,4 +248,6 @@ export default function App() {
     </div>
   );
 }
+
+
 
