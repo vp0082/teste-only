@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React from 'react';
 import { motion } from 'motion/react';
 import { Check, Flame, Star, Shield, Lock, Instagram, Twitter, MessageCircle, Heart, Play } from 'lucide-react';
