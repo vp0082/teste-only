@@ -6,55 +6,49 @@ import fs from "fs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+console.log("SERVER STARTING...");
+console.log("__dirname:", __dirname);
+console.log("Files in root:", fs.readdirSync(__dirname));
+
 const app = express();
 const PORT = 3000;
 
-// Log all requests
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
+  console.log(`REQUEST: ${req.method} ${req.url}`);
   next();
 });
 
-// Debug endpoint to check filesystem
-app.get("/api/debug/files", (req, res) => {
-  const rootFiles = fs.readdirSync(__dirname);
-  const publicFiles = fs.existsSync(path.join(__dirname, "public")) ? fs.readdirSync(path.join(__dirname, "public")) : ["public folder missing"];
-  const srcFiles = fs.existsSync(path.join(__dirname, "src")) ? fs.readdirSync(path.join(__dirname, "src")) : ["src folder missing"];
-  
+app.get("/ping", (req, res) => {
+  res.send("pong");
+});
+
+app.get("/api/debug", (req, res) => {
+  console.log("HIT /api/debug");
   res.json({
-    __dirname,
-    cwd: process.cwd(),
-    rootFiles,
-    publicFiles,
-    srcFiles,
-    testJsExists: fs.existsSync(path.join(__dirname, "public", "test.js")),
-    mainTsxExists: fs.existsSync(path.join(__dirname, "src", "main.tsx"))
+    status: "ok",
+    time: new Date().toISOString(),
+    dir: __dirname,
+    files: fs.readdirSync(__dirname)
   });
 });
 
-// Serve public folder
-app.use(express.static(path.join(__dirname, "public")));
-
-
-// Serve src folder
-app.use("/src", express.static(path.join(__dirname, "src")));
-
-// Serve index.html
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-// Serve test.js directly if it's in root (it was moved to public, but just in case)
 app.get("/test.js", (req, res) => {
   const p = path.join(__dirname, "public", "test.js");
+  console.log("Trying to serve test.js from:", p);
   if (fs.existsSync(p)) {
     res.sendFile(p);
   } else {
-    res.status(404).send("test.js not found at " + p);
+    res.status(404).send("Not found: " + p);
   }
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Static server running on http://localhost:${PORT}`);
+app.get("/", (req, res) => {
+  console.log("Serving index.html");
+  res.sendFile(path.join(__dirname, "index.html"));
 });
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server listening on port ${PORT}`);
+});
+
 

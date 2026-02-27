@@ -8,17 +8,24 @@
         <h1>DIAGNOSTIC PAGE</h1>
         <p>Checking server status...</p>
         <div id="status-test-js">test.js: PENDING</div>
-        <div id="status-main-tsx">main.tsx: PENDING</div>
+        <hr>
+        <button onclick="checkPing()">Manual Ping</button>
+        <div id="ping-result"></div>
         <hr>
         <h3>Server Debug Info:</h3>
         <pre id="debug-info">Loading debug info...</pre>
     </div>
     
     <script>
-        console.log('HTML Script: Starting diagnostics');
-        
+        function checkPing() {
+            fetch('/ping')
+                .then(r => r.text())
+                .then(t => document.getElementById('ping-result').textContent = 'Ping: ' + t)
+                .catch(e => document.getElementById('ping-result').textContent = 'Ping Error: ' + e.message);
+        }
+
         // Fetch debug info
-        fetch('/api/debug/files')
+        fetch('/api/debug')
             .then(r => r.json())
             .then(data => {
                 document.getElementById('debug-info').textContent = JSON.stringify(data, null, 2);
@@ -26,21 +33,12 @@
             .catch(err => {
                 document.getElementById('debug-info').textContent = 'Error fetching debug info: ' + err.message;
             });
-
-        window.addEventListener('error', function(e) {
-            console.error('Global Error:', e.message);
-            document.getElementById('root').innerHTML += '<div style="color:red">GLOBAL ERROR: ' + e.message + '</div>';
-        });
     </script>
 
     <script src="/test.js" 
-        onload="document.getElementById('status-test-js').innerHTML='test.js: LOADED'; document.getElementById('status-test-js').style.color='green'; document.body.style.background='lime';" 
-        onerror="document.getElementById('status-test-js').innerHTML='test.js: FAILED (404?)'; document.getElementById('status-test-js').style.color='red'; document.body.style.background='yellow';">
+        onload="document.getElementById('status-test-js').innerHTML='test.js: LOADED'; document.body.style.background='lime';" 
+        onerror="document.getElementById('status-test-js').innerHTML='test.js: FAILED'; document.body.style.background='yellow';">
     </script>
-    
-    <script type="module" src="/src/main.tsx" 
-        onload="document.getElementById('status-main-tsx').innerHTML='main.tsx: LOADED'; document.getElementById('status-main-tsx').style.color='green'; document.body.style.border='20px solid blue';" 
-        onerror="document.getElementById('status-main-tsx').innerHTML='main.tsx: FAILED (404?)'; document.getElementById('status-main-tsx').style.color='red';">
-    </script>
+
 </body>
 </html>
