@@ -1,14 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Test</title>
+    <title>Diagnostic Page</title>
 </head>
-<body style="margin: 0; min-height: 100vh;">
-    <div id="root">Testing...</div>
-    <script src="/test.js" onload="document.body.style.background='lime'" onerror="document.body.style.background='yellow'"></script>
-    <script type="module" src="/src/main.tsx" onload="document.body.style.border='20px solid blue'" onerror="document.getElementById('root').innerHTML+='<br>MODULE FAIL'"></script>
+<body style="margin: 0; min-height: 100vh; font-family: sans-serif;">
+    <div id="root" style="padding: 20px;">
+        <h1>DIAGNOSTIC PAGE</h1>
+        <p>Checking server status...</p>
+        <div id="status-test-js">test.js: PENDING</div>
+        <div id="status-main-tsx">main.tsx: PENDING</div>
+    </div>
+    
+    <script>
+        console.log('HTML Script: Starting diagnostics');
+        window.addEventListener('error', function(e) {
+            console.error('Global Error:', e.message);
+            document.getElementById('root').innerHTML += '<div style="color:red">GLOBAL ERROR: ' + e.message + '</div>';
+        });
+    </script>
 
-
-
+    <script src="/test.js" 
+        onload="document.getElementById('status-test-js').innerHTML='test.js: LOADED'; document.getElementById('status-test-js').style.color='green'; document.body.style.background='lime';" 
+        onerror="document.getElementById('status-test-js').innerHTML='test.js: FAILED (404?)'; document.getElementById('status-test-js').style.color='red'; document.body.style.background='yellow';">
+    </script>
+    
+    <script type="module" src="/src/main.tsx" 
+        onload="document.getElementById('status-main-tsx').innerHTML='main.tsx: LOADED'; document.getElementById('status-main-tsx').style.color='green'; document.body.style.border='20px solid blue';" 
+        onerror="document.getElementById('status-main-tsx').innerHTML='main.tsx: FAILED (404?)'; document.getElementById('status-main-tsx').style.color='red';">
+    </script>
 </body>
 </html>
