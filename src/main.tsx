@@ -1,19 +1,10 @@
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
-import App from './App';
-import './index.css';
-
-const rootElement = document.getElementById('root');
-if (rootElement) {
-  createRoot(rootElement).render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
-  );
-} else {
-  console.error('Root element not found');
+console.log('JS Module: Executing main.tsx');
+const root = document.getElementById('root');
+if (root) {
+  root.innerHTML = '<h1 style="color: white; background: green; padding: 20px;">JS MODULE EXECUTED</h1>';
 }
 export {};
+
 
 
 

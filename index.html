@@ -15,7 +15,9 @@
       document.getElementById('root').innerHTML = 'HTML SCRIPT EXECUTED - WAITING FOR JS MODULE...';
     </script>
 
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx" onerror="document.getElementById('root').innerHTML = 'ERROR LOADING JS MODULE'; document.body.style.border = '20px solid orange';"></script>
+
+
   </body>
 
 </html>
