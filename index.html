@@ -1,53 +1,21 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>App</title>
-  </head>
-  <body style="margin: 0; background: #1e293b; color: white; font-family: sans-serif;">
-    <div id="root" style="padding: 20px;">
-      <h2 id="loading-status">Iniciando aplicação...</h2>
-      <div id="error-display" style="color: #f87171; white-space: pre-wrap;"></div>
-    </div>
-
+<html>
+<head>
+    <title>Teste de Conexão</title>
+</head>
+<body style="background: #000; color: #0f0; font-family: monospace; padding: 50px;">
+    <h1>TESTE DE CONEXÃO</h1>
+    <div id="result" style="font-size: 24px; border: 1px solid #0f0; padding: 20px;">Aguardando resposta do servidor...</div>
+    
     <script>
-      const t = Date.now();
-      // Feedback imediato para saber se o HTML carregou
-      document.getElementById('loading-status').innerText = 'HTML carregado, aguardando JavaScript...';
-      
-      window.onerror = function(msg, url, lineNo, columnNo, error) {
-        const display = document.getElementById('error-display');
-        display.innerHTML += '\nErro Global: ' + msg + '\nLinha: ' + lineNo + '\nArquivo: ' + url;
-        return false;
-      };
-
-      // Check health
-      fetch('/api/status?t=' + t)
-        .then(r => r.json())
-        .then(d => {
-          document.getElementById('loading-status').innerHTML += '<br><span style="color:green">SERVIDOR EXPRESS ATIVO: ' + d.status + '</span>';
-        })
-        .catch(e => {
-          document.getElementById('error-display').innerHTML += '\nERRO API Status: ' + e.message;
-        });
-
-      // Timeout para avisar se o script demorar demais
-      setTimeout(() => {
-        const status = document.getElementById('loading-status');
-        if (status && status.innerText.includes('aguardando')) {
-          status.innerText = 'O JavaScript demorou muito para carregar. Verifique o console do navegador.';
-          status.style.color = '#fbbf24';
-        }
-      }, 10000); // 10 seconds
+        fetch('/api/ping')
+            .then(r => r.text())
+            .then(t => {
+                document.getElementById('result').innerText = 'RESPOSTA: ' + t;
+            })
+            .catch(e => {
+                document.getElementById('result').innerText = 'ERRO: ' + e.message;
+            });
     </script>
-    <script src="/test-basic.js?v=2"></script>
-    <script src="/app-simple.js?v=2"></script>
-
-
-
-
-
-  </body>
-
+</body>
 </html>
