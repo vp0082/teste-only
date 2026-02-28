@@ -23,13 +23,13 @@
       };
 
       // Check health
-      fetch('/api/health?t=' + t)
+      fetch('/api/status?t=' + t)
         .then(r => r.json())
         .then(d => {
-          document.getElementById('loading-status').innerHTML += '<br><span style="color:green">API Health: OK (' + d.time + ')</span>';
+          document.getElementById('loading-status').innerHTML += '<br><span style="color:green">SERVIDOR EXPRESS ATIVO: ' + d.status + '</span>';
         })
         .catch(e => {
-          document.getElementById('error-display').innerHTML += '\nERRO API Health: ' + e.message;
+          document.getElementById('error-display').innerHTML += '\nERRO API Status: ' + e.message;
         });
 
       // Timeout para avisar se o script demorar demais
@@ -41,12 +41,9 @@
         }
       }, 10000); // 10 seconds
     </script>
-    <script src="/test-basic.js?v=1"></script>
-    <script src="/app-simple.js?v=1"></script>
-    <script type="module" src="/src/entry.js?v=1" 
-      onload="console.log('Script entry.js carregado com sucesso')" 
-      onerror="document.getElementById('error-display').innerHTML += '\nERRO: Falha ao carregar /src/entry.js (Script Tag Error)'">
-    </script>
+    <script src="/test-basic.js?v=2"></script>
+    <script src="/app-simple.js?v=2"></script>
+
 
 
 
