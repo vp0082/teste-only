@@ -12,6 +12,7 @@
     </div>
 
     <script>
+      const t = Date.now();
       // Feedback imediato para saber se o HTML carregou
       document.getElementById('loading-status').innerText = 'HTML carregado, aguardando JavaScript...';
       
@@ -21,6 +22,16 @@
         return false;
       };
 
+      // Check health
+      fetch('/api/health?t=' + t)
+        .then(r => r.json())
+        .then(d => {
+          document.getElementById('loading-status').innerHTML += '<br><span style="color:green">API Health: OK (' + d.time + ')</span>';
+        })
+        .catch(e => {
+          document.getElementById('error-display').innerHTML += '\nERRO API Health: ' + e.message;
+        });
+
       // Timeout para avisar se o script demorar demais
       setTimeout(() => {
         const status = document.getElementById('loading-status');
@@ -28,14 +39,15 @@
           status.innerText = 'O JavaScript demorou muito para carregar. Verifique o console do navegador.';
           status.style.color = '#fbbf24';
         }
-      }, 5000);
+      }, 10000); // 10 seconds
     </script>
-    <script src="/test-basic.js"></script>
-    <script src="/app-simple.js"></script>
-    <script type="module" src="/src/entry.js" 
+    <script src="/test-basic.js?v=1"></script>
+    <script src="/app-simple.js?v=1"></script>
+    <script type="module" src="/src/entry.js?v=1" 
       onload="console.log('Script entry.js carregado com sucesso')" 
       onerror="document.getElementById('error-display').innerHTML += '\nERRO: Falha ao carregar /src/entry.js (Script Tag Error)'">
     </script>
+
 
 
 
