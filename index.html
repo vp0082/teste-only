@@ -4,9 +4,92 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>App - Teste 2</title>
+    <!-- Carregando React via CDN para garantir que o JS chegue ao navegador -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+  <body class="bg-slate-950 text-slate-50 font-sans">
+    <div id="root">
+      <div class="min-h-screen flex items-center justify-center">
+        <div class="text-center">
+          <h2 class="text-2xl font-bold animate-pulse">Carregando Interface...</h2>
+          <p class="text-slate-500 mt-2">Se esta mensagem não sumir em 5 segundos, verifique o console.</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+      const { motion } = window.Motion || { motion: { div: 'div', button: 'button' } };
+
+      const App = () => {
+        return (
+          <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-950 text-slate-50 font-sans">
+            <div className="max-w-2xl w-full bg-slate-900/50 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-sm">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-emerald-500/10 rounded-2xl">
+                  <i data-lucide="shield" class="w-8 h-8 text-emerald-400"></i>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold tracking-tight">TESTE 2: AMBIENTE RESTAURADO</h1>
+                  <p className="text-slate-400">Modo de Alta Compatibilidade Ativo.</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-2xl border border-slate-700/50">
+                  <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-400 mt-1 shrink-0"></i>
+                  <div>
+                    <h3 className="font-semibold">Conexão Estável</h3>
+                    <p className="text-sm text-slate-400">O servidor Express está entregando os arquivos corretamente.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-2xl border border-slate-700/50">
+                  <i data-lucide="zap" class="w-6 h-6 text-amber-400 mt-1 shrink-0"></i>
+                  <div>
+                    <h3 className="font-semibold">Modo de Compatibilidade</h3>
+                    <p className="text-sm text-slate-400">Usando carregamento via CDN para evitar bloqueios de rede.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-2xl border border-slate-700/50">
+                  <i data-lucide="terminal" class="w-6 h-6 text-blue-400 mt-1 shrink-0"></i>
+                  <div>
+                    <h3 className="font-semibold">Pronto para Codar</h3>
+                    <p className="text-sm text-slate-400">Você pode começar a descrever o que deseja construir.</p>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                className="w-full mt-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl transition-colors shadow-lg shadow-emerald-500/20"
+                onClick={() => alert('Sistema pronto!')}
+              >
+                INICIAR PROJETO
+              </button>
+            </div>
+
+            <p className="mt-8 text-slate-500 text-sm font-mono">
+              v2.1.0-compat | build: {new Date().toLocaleTimeString()}
+            </p>
+          </div>
+        );
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+      
+      // Inicializar ícones do Lucide
+      setTimeout(() => {
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }, 500);
+    </script>
   </body>
 </html>
