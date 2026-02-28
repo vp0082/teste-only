@@ -51,6 +51,22 @@
         0% { transform: translateX(-100%); }
         100% { transform: translateX(200%); }
       }
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+      @keyframes popValue {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); color: #10b981; }
+        100% { transform: scale(1); }
+      }
+      .animate-slide-in { animation: slideIn 0.5s ease-out forwards; }
+      .animate-slide-out { animation: slideOut 0.5s ease-in forwards; }
+      .animate-pop { animation: popValue 0.4s ease-out; }
     </style>
 
     <script>
@@ -103,6 +119,40 @@
         const [pixType, setPixType] = useState('cpf');
 
         const [withdrawProgress, setWithdrawProgress] = useState(0);
+        const [alert, setAlert] = useState(null);
+        const [isAlertVisible, setIsAlertVisible] = useState(false);
+
+        const alertsData = [
+          { name: "João Silva", city: "São Paulo", value: "R$ 927,55" },
+          { name: "Maria Oliveira", city: "Rio de Janeiro", value: "R$ 1.855,10" },
+          { name: "Carlos Santos", city: "Belo Horizonte", value: "R$ 927,55" },
+          { name: "Ana Pereira", city: "Curitiba", value: "R$ 463,77" },
+          { name: "Lucas Mendes", city: "Fortaleza", value: "R$ 927,55" },
+          { name: "Beatriz Gomes", city: "Salvador", value: "R$ 1.855,10" },
+          { name: "Ricardo Alves", city: "Porto Alegre", value: "R$ 927,55" },
+          { name: "Fernanda Lima", city: "Brasília", value: "R$ 463,77" }
+        ];
+
+        useEffect(() => {
+          const showRandomAlert = () => {
+            const randomAlert = alertsData[Math.floor(Math.random() * alertsData.length)];
+            setAlert(randomAlert);
+            setIsAlertVisible(true);
+            
+            setTimeout(() => {
+              setIsAlertVisible(false);
+            }, 5000);
+          };
+
+          const interval = setInterval(showRandomAlert, 12000);
+          // Show first alert after 3 seconds
+          const initialTimeout = setTimeout(showRandomAlert, 3000);
+
+          return () => {
+            clearInterval(interval);
+            clearTimeout(initialTimeout);
+          };
+        }, []);
 
         // Gerar hash aleatório
         const generateHash = () => {
@@ -406,6 +456,23 @@
 
         return (
           <div className="min-h-screen bg-[#0a0a0b] text-[#e2e2e4] font-mono p-4 md:p-8 flex flex-col items-center">
+            {/* Alerta de Saque Recente */}
+            {alert && (
+              <div className={`fixed top-4 right-4 z-[100] w-72 bg-[#151518] border border-emerald-500/30 p-4 rounded-2xl shadow-2xl backdrop-blur-xl ${isAlertVisible ? 'animate-slide-in' : 'animate-slide-out'}`}>
+                <div className="flex items-start gap-3">
+                  <div className="bg-emerald-500/20 p-2 rounded-lg">
+                    <i data-lucide="check-circle" className="w-5 h-5 text-emerald-500"></i>
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-[10px] text-zinc-500 uppercase font-bold mb-1">Saque Aprovado</div>
+                    <div className="text-xs font-black text-white">{alert.name}</div>
+                    <div className="text-[9px] text-zinc-400 uppercase tracking-tighter">{alert.city}</div>
+                    <div className="mt-2 text-emerald-400 font-black text-sm">{alert.value}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Cabeçalho */}
             <header className="w-full max-w-5xl flex justify-between items-center mb-8 border-b border-[#1f1f23] pb-6">
               <div className="flex items-center gap-3">
@@ -465,7 +532,9 @@
                   </div>
                   <div className="bg-[#151518] border border-[#1f1f23] p-6 rounded-xl shadow-inner">
                     <div className="text-[10px] text-zinc-500 uppercase mb-2">Saldo Total</div>
-                    <div className="text-3xl font-bold text-white">{balance.toFixed(4)} <span className="text-sm text-zinc-600">BTC</span></div>
+                    <div key={balance} className="text-3xl font-bold text-white animate-pop">
+                      {balance.toFixed(4)} <span className="text-sm text-zinc-600">BTC</span>
+                    </div>
                   </div>
                 </div>
 
