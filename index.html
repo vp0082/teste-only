@@ -24,59 +24,155 @@
 
     <script type="text/babel">
       const { useState, useEffect } = React;
-      const { motion } = window.Motion || { motion: { div: 'div', button: 'button' } };
+      const { motion, AnimatePresence } = window.Motion || { motion: { div: 'div', button: 'button', h1: 'h1', p: 'p', span: 'span' }, AnimatePresence: ({children}) => children };
 
       const App = () => {
+        const [scrolled, setScrolled] = useState(false);
+
+        useEffect(() => {
+          const handleScroll = () => setScrolled(window.scrollY > 50);
+          window.addEventListener('scroll', handleScroll);
+          return () => window.removeEventListener('scroll', handleScroll);
+        }, []);
+
+        useEffect(() => {
+          if (window.lucide) window.lucide.createIcons();
+        }, []);
+
         return (
-          <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-950 text-slate-50 font-sans">
-            <div className="max-w-2xl w-full bg-slate-900/50 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-sm">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-emerald-500/10 rounded-2xl">
-                  <i data-lucide="shield" class="w-8 h-8 text-emerald-400"></i>
+          <div className="min-h-screen bg-black text-white font-sans selection:bg-emerald-500 selection:text-black">
+            {/* Navigation */}
+            <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-black/80 backdrop-blur-md py-4 border-b border-white/10' : 'bg-transparent py-8'}`}>
+              <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                <div className="flex items-center gap-2 group cursor-pointer">
+                  <div className="w-10 h-10 bg-gradient-to-tr from-emerald-500 to-emerald-300 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:rotate-12 transition-transform duration-300">
+                    <i data-lucide="shield" className="w-6 h-6 text-black"></i>
+                  </div>
+                  <span className="text-xl font-bold tracking-tighter uppercase">Exclusive Access</span>
                 </div>
-                <div>
-                  <h1 className="text-3xl font-bold tracking-tight">TESTE 2: AMBIENTE RESTAURADO</h1>
-                  <p className="text-slate-400">Modo de Alta Compatibilidade Ativo.</p>
+                
+                <div className="hidden md:flex items-center gap-10 text-sm font-medium text-white/60 uppercase tracking-widest">
+                  <a href="#" className="hover:text-white transition-colors">Experience</a>
+                  <a href="#" className="hover:text-white transition-colors">Benefits</a>
+                  <a href="#" className="hover:text-white transition-colors">Pricing</a>
                 </div>
+
+                <button className="px-6 py-2.5 bg-white text-black text-xs font-bold rounded-full hover:bg-emerald-400 transition-all duration-300 uppercase tracking-widest">
+                  Join Now
+                </button>
+              </div>
+            </nav>
+
+            {/* Hero Section */}
+            <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+              {/* Background Elements */}
+              <div className="absolute inset-0 z-0">
+                <div className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 bg-emerald-500/10 blur-[120px] rounded-full"></div>
+                <div className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-blue-500/10 blur-[120px] rounded-full"></div>
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]"></div>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-2xl border border-slate-700/50">
-                  <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-400 mt-1 shrink-0"></i>
-                  <div>
-                    <h3 className="font-semibold">Conexão Estável</h3>
-                    <p className="text-sm text-slate-400">O servidor Express está entregando os arquivos corretamente.</p>
-                  </div>
+              <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8">
+                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-400">Limited Membership Open</span>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-2xl border border-slate-700/50">
-                  <i data-lucide="zap" class="w-6 h-6 text-amber-400 mt-1 shrink-0"></i>
-                  <div>
-                    <h3 className="font-semibold">Modo de Compatibilidade</h3>
-                    <p className="text-sm text-slate-400">Usando carregamento via CDN para evitar bloqueios de rede.</p>
-                  </div>
+                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[0.9] mb-8">
+                  ELEVATE YOUR <br />
+                  <span className="bg-gradient-to-r from-emerald-400 via-white to-blue-400 bg-clip-text text-transparent">DIGITAL REALM</span>
+                </h1>
+
+                <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12 leading-relaxed">
+                  Access premium content, elite networking, and curated insights designed for those who demand excellence.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                  <button className="group relative px-10 py-5 bg-emerald-500 text-black font-bold rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95">
+                    <span className="relative z-10 flex items-center gap-2 uppercase tracking-widest">
+                      Get Instant Access
+                      <i data-lucide="arrow-right" className="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                    <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                  </button>
+                  
+                  <button className="px-10 py-5 border border-white/10 hover:bg-white/5 rounded-2xl transition-all uppercase tracking-widest text-sm font-bold">
+                    View Experience
+                  </button>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-2xl border border-slate-700/50">
-                  <i data-lucide="terminal" class="w-6 h-6 text-blue-400 mt-1 shrink-0"></i>
-                  <div>
-                    <h3 className="font-semibold">Pronto para Codar</h3>
-                    <p className="text-sm text-slate-400">Você pode começar a descrever o que deseja construir.</p>
-                  </div>
+                {/* Stats */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 pt-12 border-t border-white/5">
+                  {[
+                    { label: 'Active Members', value: '12K+' },
+                    { label: 'Premium Assets', value: '500+' },
+                    { label: 'Global Events', value: '24' },
+                    { label: 'Support', value: '24/7' }
+                  ].map((stat, i) => (
+                    <div key={i} className="text-center">
+                      <div className="text-2xl font-bold mb-1">{stat.value}</div>
+                      <div className="text-[10px] uppercase tracking-widest text-white/40">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
+            </section>
 
-              <button 
-                className="w-full mt-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl transition-colors shadow-lg shadow-emerald-500/20"
-                onClick={() => alert('Sistema pronto!')}
-              >
-                INICIAR PROJETO
-              </button>
-            </div>
+            {/* Features Section */}
+            <section className="py-32 bg-zinc-950/50">
+              <div className="max-w-7xl mx-auto px-6">
+                <div className="grid md:grid-cols-3 gap-8">
+                  {[
+                    {
+                      icon: 'zap',
+                      title: 'Instant Insights',
+                      desc: 'Real-time market analysis and trend reports delivered directly to your dashboard.'
+                    },
+                    {
+                      icon: 'users',
+                      title: 'Elite Network',
+                      desc: 'Connect with industry leaders and visionary founders in our private community.'
+                    },
+                    {
+                      icon: 'crown',
+                      title: 'Curated Content',
+                      desc: 'Hand-picked resources and deep-dives that you won\'t find anywhere else.'
+                    }
+                  ].map((feature, i) => (
+                    <div key={i} className="group p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500">
+                      <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide={feature.icon} className="w-6 h-6 text-emerald-400"></i>
+                      </div>
+                      <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
+                      <p className="text-white/40 leading-relaxed text-sm">
+                        {feature.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
 
-            <p className="mt-8 text-slate-500 text-sm font-mono">
-              v2.1.0-compat | build: {new Date().toLocaleTimeString()}
-            </p>
+            {/* CTA Section */}
+            <section className="py-32 relative overflow-hidden">
+              <div className="absolute inset-0 bg-emerald-500/5"></div>
+              <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+                <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tight">READY TO JOIN THE ELITE?</h2>
+                <p className="text-white/50 mb-12 max-w-xl mx-auto">
+                  Stop settling for average. Join the community that's shaping the future of digital excellence.
+                </p>
+                <button className="px-12 py-6 bg-white text-black font-black rounded-full hover:bg-emerald-400 transition-all hover:scale-105 uppercase tracking-[0.3em]">
+                  Secure Your Spot
+                </button>
+              </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="py-12 border-t border-white/5 text-center">
+              <div className="text-[10px] uppercase tracking-[0.5em] text-white/20">
+                &copy; 2026 Exclusive Access. All Rights Reserved.
+              </div>
+            </footer>
           </div>
         );
       };
@@ -84,12 +180,16 @@
       const root = ReactDOM.createRoot(document.getElementById('root'));
       root.render(<App />);
       
-      // Inicializar ícones do Lucide
-      setTimeout(() => {
+      // Initialize Lucide icons
+      const initIcons = () => {
         if (window.lucide) {
           window.lucide.createIcons();
+        } else {
+          setTimeout(initIcons, 100);
         }
-      }, 500);
+      };
+      initIcons();
     </script>
+
   </body>
 </html>
