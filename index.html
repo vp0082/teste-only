@@ -5,8 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>App</title>
   </head>
-  <body>
-    <div id="root"></div>
+  <body style="margin: 0; background: #1e293b; color: white; font-family: sans-serif;">
+    <div id="root" style="padding: 20px;">
+      <h2 id="loading-status">Iniciando aplicação...</h2>
+      <div id="error-display" style="color: #f87171; white-space: pre-wrap;"></div>
+    </div>
+
+    <script>
+      // Feedback imediato para saber se o HTML carregou
+      document.getElementById('loading-status').innerText = 'HTML carregado, aguardando JavaScript...';
+      
+      window.onerror = function(msg, url, lineNo, columnNo, error) {
+        const display = document.getElementById('error-display');
+        display.innerHTML += '\nErro: ' + msg + '\nLinha: ' + lineNo + '\nArquivo: ' + url;
+        return false;
+      };
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
+
 </html>

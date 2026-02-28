@@ -27,8 +27,15 @@ const App = () => (
   </div>
 );
 
+console.log('Main.tsx carregando...');
+
 const container = document.getElementById('root');
 if (container) {
+  console.log('Container encontrado, renderizando...');
   const root = createRoot(container);
   root.render(<App />);
+  document.getElementById('loading-status').style.display = 'none';
+} else {
+  console.error('Erro: Elemento #root não encontrado!');
 }
+
