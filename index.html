@@ -23,155 +23,198 @@
     </div>
 
     <script type="text/babel">
-      const { useState, useEffect } = React;
-      const { motion, AnimatePresence } = window.Motion || { motion: { div: 'div', button: 'button', h1: 'h1', p: 'p', span: 'span' }, AnimatePresence: ({children}) => children };
+      const { useState, useEffect, useRef } = React;
 
       const App = () => {
-        const [scrolled, setScrolled] = useState(false);
+        const [isMining, setIsMining] = useState(false);
+        const [blocksSolved, setBlocksSolved] = useState(0);
+        const [balance, setBalance] = useState(0);
+        const [hashRate, setHashRate] = useState(45.2); // TH/s
+        const [logs, setLogs] = useState([]);
+        const [progress, setProgress] = useState(0);
+        const logEndRef = useRef(null);
+
+        // Generate random hash
+        const generateHash = () => {
+          const chars = '0123456789abcdef';
+          let result = '0000'; // Simulate difficulty with leading zeros
+          for (let i = 0; i < 60; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          return result;
+        };
 
         useEffect(() => {
-          const handleScroll = () => setScrolled(window.scrollY > 50);
-          window.addEventListener('scroll', handleScroll);
-          return () => window.removeEventListener('scroll', handleScroll);
-        }, []);
+          let interval;
+          if (isMining) {
+            interval = setInterval(() => {
+              // Update logs
+              const newHash = generateHash();
+              setLogs(prev => [newHash, ...prev].slice(0, 15));
+
+              // Update progress
+              setProgress(prev => {
+                const step = (hashRate / 100) + (Math.random() * 2);
+                if (prev + step >= 100) {
+                  // Block Solved!
+                  setBlocksSolved(b => b + 1);
+                  setBalance(bal => bal + 6.25);
+                  return 0;
+                }
+                return prev + step;
+              });
+            }, 100);
+          }
+          return () => clearInterval(interval);
+        }, [isMining, hashRate]);
 
         useEffect(() => {
           if (window.lucide) window.lucide.createIcons();
-        }, []);
+        }, [isMining]);
+
+        const toggleMining = () => setIsMining(!isMining);
+        const upgradeHardware = () => {
+          if (balance >= 1) {
+            setBalance(b => b - 1);
+            setHashRate(h => h + 15.5);
+          } else {
+            alert("Saldo insuficiente! Você precisa de pelo menos 1.00 BTC para upgrade.");
+          }
+        };
 
         return (
-          <div className="min-h-screen bg-black text-white font-sans selection:bg-emerald-500 selection:text-black">
-            {/* Navigation */}
-            <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-black/80 backdrop-blur-md py-4 border-b border-white/10' : 'bg-transparent py-8'}`}>
-              <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-                <div className="flex items-center gap-2 group cursor-pointer">
-                  <div className="w-10 h-10 bg-gradient-to-tr from-emerald-500 to-emerald-300 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:rotate-12 transition-transform duration-300">
-                    <i data-lucide="shield" className="w-6 h-6 text-black"></i>
+          <div className="min-h-screen bg-[#0a0a0b] text-[#e2e2e4] font-mono p-4 md:p-8 flex flex-col items-center">
+            {/* Header */}
+            <header className="w-full max-w-5xl flex justify-between items-center mb-8 border-b border-[#1f1f23] pb-6">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${isMining ? 'bg-amber-500/20 text-amber-500 animate-pulse' : 'bg-zinc-800 text-zinc-500'}`}>
+                  <i data-lucide="cpu" className="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold tracking-tighter uppercase">CryptoCore Miner <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded ml-2">v1.0.4-PRO</span></h1>
+                  <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Hardware ID: 0x882A-BF92-110C</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-zinc-500 uppercase">System Status</div>
+                <div className={`text-xs font-bold uppercase ${isMining ? 'text-emerald-500' : 'text-rose-500'}`}>
+                  {isMining ? '● Operational' : '○ Standby'}
+                </div>
+              </div>
+            </header>
+
+            <main className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Stats Panel */}
+              <div className="lg:col-span-2 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-[#151518] border border-[#1f1f23] p-6 rounded-xl shadow-inner">
+                    <div className="text-[10px] text-zinc-500 uppercase mb-2">Hashrate</div>
+                    <div className="text-3xl font-bold text-amber-500">{hashRate.toFixed(1)} <span className="text-sm text-zinc-600">TH/s</span></div>
                   </div>
-                  <span className="text-xl font-bold tracking-tighter uppercase">Exclusive Access</span>
-                </div>
-                
-                <div className="hidden md:flex items-center gap-10 text-sm font-medium text-white/60 uppercase tracking-widest">
-                  <a href="#" className="hover:text-white transition-colors">Experience</a>
-                  <a href="#" className="hover:text-white transition-colors">Benefits</a>
-                  <a href="#" className="hover:text-white transition-colors">Pricing</a>
-                </div>
-
-                <button className="px-6 py-2.5 bg-white text-black text-xs font-bold rounded-full hover:bg-emerald-400 transition-all duration-300 uppercase tracking-widest">
-                  Join Now
-                </button>
-              </div>
-            </nav>
-
-            {/* Hero Section */}
-            <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-              {/* Background Elements */}
-              <div className="absolute inset-0 z-0">
-                <div className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 bg-emerald-500/10 blur-[120px] rounded-full"></div>
-                <div className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-blue-500/10 blur-[120px] rounded-full"></div>
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]"></div>
-              </div>
-
-              <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8">
-                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-400">Limited Membership Open</span>
+                  <div className="bg-[#151518] border border-[#1f1f23] p-6 rounded-xl shadow-inner">
+                    <div className="text-[10px] text-zinc-500 uppercase mb-2">Blocks Solved</div>
+                    <div className="text-3xl font-bold text-emerald-500">{blocksSolved}</div>
+                  </div>
+                  <div className="bg-[#151518] border border-[#1f1f23] p-6 rounded-xl shadow-inner">
+                    <div className="text-[10px] text-zinc-500 uppercase mb-2">Total Balance</div>
+                    <div className="text-3xl font-bold text-white">{balance.toFixed(4)} <span className="text-sm text-zinc-600">BTC</span></div>
+                  </div>
                 </div>
 
-                <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[0.9] mb-8">
-                  ELEVATE YOUR <br />
-                  <span className="bg-gradient-to-r from-emerald-400 via-white to-blue-400 bg-clip-text text-transparent">DIGITAL REALM</span>
-                </h1>
-
-                <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12 leading-relaxed">
-                  Access premium content, elite networking, and curated insights designed for those who demand excellence.
-                </p>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                  <button className="group relative px-10 py-5 bg-emerald-500 text-black font-bold rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95">
-                    <span className="relative z-10 flex items-center gap-2 uppercase tracking-widest">
-                      Get Instant Access
-                      <i data-lucide="arrow-right" className="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                    </span>
-                    <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                  </button>
+                {/* Mining Visualization */}
+                <div className="bg-[#151518] border border-[#1f1f23] p-6 rounded-xl relative overflow-hidden">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="text-xs uppercase font-bold text-zinc-400 flex items-center gap-2">
+                      <i data-lucide="activity" className="w-4 h-4"></i>
+                      Network Difficulty Progress
+                    </div>
+                    <div className="text-xs font-bold text-amber-500">{progress.toFixed(1)}%</div>
+                  </div>
                   
-                  <button className="px-10 py-5 border border-white/10 hover:bg-white/5 rounded-2xl transition-all uppercase tracking-widest text-sm font-bold">
-                    View Experience
-                  </button>
-                </div>
+                  <div className="h-4 bg-black/50 rounded-full border border-zinc-800 overflow-hidden mb-6">
+                    <div 
+                      className="h-full bg-gradient-to-r from-amber-600 to-amber-400 transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]"
+                      style={{ width: `${progress}%` }}
+                    ></div>
+                  </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 pt-12 border-t border-white/5">
-                  {[
-                    { label: 'Active Members', value: '12K+' },
-                    { label: 'Premium Assets', value: '500+' },
-                    { label: 'Global Events', value: '24' },
-                    { label: 'Support', value: '24/7' }
-                  ].map((stat, i) => (
-                    <div key={i} className="text-center">
-                      <div className="text-2xl font-bold mb-1">{stat.value}</div>
-                      <div className="text-[10px] uppercase tracking-widest text-white/40">{stat.label}</div>
+                  <div className="bg-black/40 p-4 rounded-lg border border-zinc-900 font-mono text-[10px] leading-relaxed overflow-hidden h-64">
+                    <div className="text-zinc-600 mb-2 border-b border-zinc-800 pb-1">REAL-TIME HASH STREAM [SHA-256]</div>
+                    {logs.length === 0 ? (
+                      <div className="text-zinc-800 italic">Waiting for miner initialization...</div>
+                    ) : (
+                      logs.map((log, i) => (
+                        <div key={i} className={`flex gap-4 ${i === 0 ? 'text-amber-400 font-bold' : 'text-zinc-500'}`}>
+                          <span className="opacity-30">[{new Date().toLocaleTimeString()}]</span>
+                          <span className="truncate">{log}</span>
+                          <span className="text-zinc-700 ml-auto">NONCE: {Math.floor(Math.random() * 999999)}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Controls Panel */}
+              <div className="space-y-6">
+                <div className="bg-[#151518] border border-[#1f1f23] p-6 rounded-xl">
+                  <h2 className="text-xs uppercase font-bold text-zinc-400 mb-6 flex items-center gap-2">
+                    <i data-lucide="settings" className="w-4 h-4"></i>
+                    Miner Controls
+                  </h2>
+                  
+                  <div className="space-y-4">
+                    <button 
+                      onClick={toggleMining}
+                      className={`w-full py-4 rounded-lg font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
+                        isMining 
+                        ? 'bg-rose-500/10 text-rose-500 border border-rose-500/50 hover:bg-rose-500 hover:text-white' 
+                        : 'bg-emerald-500 text-black hover:bg-emerald-400'
+                      }`}
+                    >
+                      <i data-lucide={isMining ? "square" : "play"} className="w-5 h-5"></i>
+                      {isMining ? 'Stop Mining' : 'Start Mining'}
+                    </button>
+
+                    <button 
+                      onClick={upgradeHardware}
+                      className="w-full py-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg font-bold uppercase tracking-widest transition-all border border-zinc-700 flex items-center justify-center gap-2"
+                    >
+                      <i data-lucide="zap" className="w-5 h-5 text-amber-500"></i>
+                      Upgrade Hardware
+                      <span className="text-[10px] bg-black/50 px-2 py-1 rounded ml-2">1.0 BTC</span>
+                    </button>
+                  </div>
+
+                  <div className="mt-8 pt-8 border-t border-zinc-800 space-y-4">
+                    <div className="flex justify-between text-[10px] uppercase">
+                      <span className="text-zinc-500">Core Temp</span>
+                      <span className={isMining ? 'text-amber-500' : 'text-emerald-500'}>{isMining ? '72°C' : '34°C'}</span>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Features Section */}
-            <section className="py-32 bg-zinc-950/50">
-              <div className="max-w-7xl mx-auto px-6">
-                <div className="grid md:grid-cols-3 gap-8">
-                  {[
-                    {
-                      icon: 'zap',
-                      title: 'Instant Insights',
-                      desc: 'Real-time market analysis and trend reports delivered directly to your dashboard.'
-                    },
-                    {
-                      icon: 'users',
-                      title: 'Elite Network',
-                      desc: 'Connect with industry leaders and visionary founders in our private community.'
-                    },
-                    {
-                      icon: 'crown',
-                      title: 'Curated Content',
-                      desc: 'Hand-picked resources and deep-dives that you won\'t find anywhere else.'
-                    }
-                  ].map((feature, i) => (
-                    <div key={i} className="group p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500">
-                      <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                        <i data-lucide={feature.icon} className="w-6 h-6 text-emerald-400"></i>
-                      </div>
-                      <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
-                      <p className="text-white/40 leading-relaxed text-sm">
-                        {feature.desc}
-                      </p>
+                    <div className="flex justify-between text-[10px] uppercase">
+                      <span className="text-zinc-500">Power Usage</span>
+                      <span className="text-zinc-300">{isMining ? '850W' : '12W'}</span>
                     </div>
-                  ))}
+                    <div className="flex justify-between text-[10px] uppercase">
+                      <span className="text-zinc-500">Fan Speed</span>
+                      <span className="text-zinc-300">{isMining ? '4200 RPM' : '0 RPM'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-amber-500/5 border border-amber-500/20 p-4 rounded-xl">
+                  <div className="flex gap-3">
+                    <i data-lucide="info" className="w-5 h-5 text-amber-500 shrink-0"></i>
+                    <p className="text-[10px] text-amber-200/60 leading-relaxed uppercase">
+                      Mining rewards are simulated. Block reward set to 6.25 BTC. Hardware upgrades increase hash throughput.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </section>
+            </main>
 
-            {/* CTA Section */}
-            <section className="py-32 relative overflow-hidden">
-              <div className="absolute inset-0 bg-emerald-500/5"></div>
-              <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-                <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tight">READY TO JOIN THE ELITE?</h2>
-                <p className="text-white/50 mb-12 max-w-xl mx-auto">
-                  Stop settling for average. Join the community that's shaping the future of digital excellence.
-                </p>
-                <button className="px-12 py-6 bg-white text-black font-black rounded-full hover:bg-emerald-400 transition-all hover:scale-105 uppercase tracking-[0.3em]">
-                  Secure Your Spot
-                </button>
-              </div>
-            </section>
-
-            {/* Footer */}
-            <footer className="py-12 border-t border-white/5 text-center">
-              <div className="text-[10px] uppercase tracking-[0.5em] text-white/20">
-                &copy; 2026 Exclusive Access. All Rights Reserved.
-              </div>
+            <footer className="mt-auto pt-12 pb-6 text-[10px] text-zinc-700 uppercase tracking-[0.4em]">
+              Encrypted Connection Secured | Node: 182.19.0.44
             </footer>
           </div>
         );
@@ -190,6 +233,7 @@
       };
       initIcons();
     </script>
+
 
   </body>
 </html>
