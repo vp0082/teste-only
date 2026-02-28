@@ -17,11 +17,25 @@
       
       window.onerror = function(msg, url, lineNo, columnNo, error) {
         const display = document.getElementById('error-display');
-        display.innerHTML += '\nErro: ' + msg + '\nLinha: ' + lineNo + '\nArquivo: ' + url;
+        display.innerHTML += '\nErro Global: ' + msg + '\nLinha: ' + lineNo + '\nArquivo: ' + url;
         return false;
       };
+
+      // Timeout para avisar se o script demorar demais
+      setTimeout(() => {
+        const status = document.getElementById('loading-status');
+        if (status && status.innerText.includes('aguardando')) {
+          status.innerText = 'O JavaScript demorou muito para carregar. Verifique o console do navegador.';
+          status.style.color = '#fbbf24';
+        }
+      }, 5000);
     </script>
-    <script type="module" src="/src/main.tsx"></script>
+    <script src="/test-basic.js"></script>
+    <script type="module" src="/src/main.tsx" 
+      onload="console.log('Script main.tsx carregado com sucesso')" 
+      onerror="document.getElementById('error-display').innerHTML += '\nERRO: Falha ao carregar /src/main.tsx (Script Tag Error)'">
+    </script>
+
   </body>
 
 </html>
